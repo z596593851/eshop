@@ -17,6 +17,7 @@
         <module>renren-fast</module>
         <module>renren-generator</module>
         <module>eshop-common</module>
+        <module>eshop-gateway</module>
     </modules>
 
 </project>

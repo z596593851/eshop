@@ -5,6 +5,8 @@ import java.util.Map;
 
 //mport org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,20 +24,31 @@ import com.hxm.common.utils.R;
  * 品牌
  *
  * @author xiaoming
- * @email sunlightcs@gmail.com
  * @date 2021-04-26 21:30:08
  */
+@RefreshScope
 @RestController
 @RequestMapping("product/brand")
 public class BrandController {
+
+    @Value("${product.name}")
+    private String name;
+
+    @Value("${product.age}")
+    private String age;
+
     @Autowired
     private BrandService brandService;
+
+    @RequestMapping("/config")
+    public R testConfig(){
+        return R.ok().put("name",name).put("age",age);
+    }
 
     /**
      * 列表
      */
     @RequestMapping("/list")
-    //@RequiresPermissions("product:brand:list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = brandService.queryPage(params);
 
