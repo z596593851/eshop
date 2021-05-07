@@ -1,22 +1,13 @@
-/**
- * Copyright (c) 2016-2019 人人开源 All rights reserved.
- *
- * https://www.renren.io
- *
- * 版权所有，侵权必究！
- */
-
 package com.hxm.common.utils;
 
+import com.alibaba.fastjson.JSONObject;
 import org.apache.http.HttpStatus;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 返回数据
  *
- * @author Mark sunlightcs@gmail.com
  */
 public class R extends HashMap<String, Object> {
 	private static final long serialVersionUID = 1L;
@@ -61,5 +52,30 @@ public class R extends HashMap<String, Object> {
 	public R put(String key, Object value) {
 		super.put(key, value);
 		return this;
+	}
+
+	public boolean wordBreak(String s, List<String> wordDict) {
+		boolean[] dp =new boolean[s.length()];
+		Set<String> set = new HashSet<>(wordDict);
+		set.add("");
+		for(int limit=0; limit<s.length(); limit++){
+			for(int i=limit; i>=0; i--){
+				dp[i]=dp[i] || set.contains(s.substring(0,i+1));
+				if(dp[i] && set.contains(s.substring(i+1,limit+1))){
+					dp[limit]=true;
+					break;
+				}
+			}
+		}
+		System.out.println(JSONObject.toJSONString(dp));
+		return dp[s.length()-1];
+	}
+
+	public static void main(String[] args) {
+		String s="applepenapple";
+		String [] sarray={"apple","pen"};
+		List<String> list= Arrays.asList(sarray);
+		R r=new R();
+		System.out.println(r.wordBreak(s, list));
 	}
 }

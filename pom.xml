@@ -8,6 +8,12 @@
     <name>eshop</name>
     <description>Demo project for Spring Boot</description>
     <packaging>pom</packaging>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+
     <modules>
         <module>eshop-coupon</module>
         <module>eshop-member</module>
@@ -15,9 +21,10 @@
         <module>eshop-product</module>
         <module>eshop-ware</module>
         <module>renren-fast</module>
-        <module>renren-generator</module>
-        <module>eshop-common</module>
+<!--        <module>renren-generator</module>-->
+<!--        <module>eshop-common</module>-->
         <module>eshop-gateway</module>
+        <module>eshop-common</module>
     </modules>
 
 </project>

@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 //mport org.apache.shiro.authz.annotation.RequiresPermissions;
+import com.hxm.eshop.product.vo.SpuSaveVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +23,6 @@ import com.hxm.common.utils.R;
  * spu信息
  *
  * @author xiaoming
- * @email sunlightcs@gmail.com
  * @date 2021-04-26 21:30:08
  */
 @RestController
@@ -58,10 +58,8 @@ public class SpuInfoController {
      * 保存
      */
     @RequestMapping("/save")
-    //@RequiresPermissions("product:spuinfo:save")
-    public R save(@RequestBody SpuInfoEntity spuInfo){
-		spuInfoService.save(spuInfo);
-
+    public R save(@RequestBody SpuSaveVo vo){
+        spuInfoService.saveSpuInfo(vo);
         return R.ok();
     }
 

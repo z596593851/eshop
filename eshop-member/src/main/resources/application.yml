@@ -1,0 +1,42 @@
+server:
+  port: 8100
+spring:
+  datasource:
+    username: root
+    password: root
+    url: jdbc:mysql://localhost:3306/gulimall_ums?useSSL=false&serverTimezone=GMT%2B8&characterEncoding=utf-8
+    driver-class-name: com.mysql.jdbc.Driver
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+  application:
+    name: eshop-member
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 100MB
+
+mybatis-plus:
+  mapper-locations: classpath:/mapper/**/*.xml
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: show_status  # 全局逻辑删除的实体字段名(since 3.3.0,配置后可以忽略不配置步骤2)
+      logic-delete-value: 1 # 逻辑已删除值(默认为 1)
+      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
+# 分布式文件系统fastdfs配置
+fdfs:
+  host: 10.252.53.251 #fdfs nginx所在地址，用来在返回地址中拼串
+  so-timeout: 1501
+  connect-timeout: 601
+  tracker-list:            #TrackerList参数,支持多个
+    - 10.252.53.251:22122
+  thumb-image:
+    width: 100
+    height: 100
+# 打印sql
+logging:
+  level:
+    com.hxm.eshop: debug
+
