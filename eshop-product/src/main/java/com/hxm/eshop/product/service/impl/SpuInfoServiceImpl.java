@@ -1,6 +1,10 @@
 package com.hxm.eshop.product.service.impl;
 
+import com.hxm.common.to.SkuReductionTo;
+import com.hxm.common.to.SpuBoundTo;
+import com.hxm.common.utils.R;
 import com.hxm.eshop.product.entity.*;
+import com.hxm.eshop.product.feign.CouponFeignService;
 import com.hxm.eshop.product.service.*;
 import com.hxm.eshop.product.vo.*;
 import org.apache.commons.lang.StringUtils;
@@ -8,6 +12,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +49,9 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
     @Autowired
     SkuSaleAttrValueService skuSaleAttrValueService;
+
+    @Autowired
+    CouponFeignService couponFeignService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -90,6 +98,15 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         attrValueService.saveProductAttr(collect);
 
         //5、保存spu的积分信息；gulimall_sms->sms_spu_bounds
+        Bounds bounds = vo.getBounds();
+        SpuBoundTo spuBoundTo = new SpuBoundTo();
+        BeanUtils.copyProperties(bounds,spuBoundTo);
+        spuBoundTo.setSpuId(infoEntity.getId());
+        R r = couponFeignService.saveSpuBounds(spuBoundTo);
+        if(r.getCode() != 0){
+            log.error("远程保存spu积分信息失败");
+        }
+
 
         //5、保存当前spu对应的所有sku信息；
         List<Skus> skus = vo.getSkus();
@@ -137,8 +154,60 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
                 }).collect(Collectors.toList());
                 //5.3）、sku的销售属性信息：pms_sku_sale_attr_value
                 skuSaleAttrValueService.saveBatch(skuSaleAttrValueEntities);
+
+                // //5.4）、sku的优惠、满减等信息；gulimall_sms->sms_sku_ladder\sms_sku_full_reduction\sms_member_price
+                SkuReductionTo skuReductionTo = new SkuReductionTo();
+                BeanUtils.copyProperties(item,skuReductionTo);
+                skuReductionTo.setSkuId(skuId);
+                if(skuReductionTo.getFullCount() >0 || skuReductionTo.getFullPrice().compareTo(new BigDecimal("0")) > 0){
+                    R r1 = couponFeignService.saveSkuReduction(skuReductionTo);
+                    if(r1.getCode() != 0){
+                        log.error("远程保存sku优惠信息失败");
+                    }
+                }
             });
         }
+    }
+
+    @Override
+    public PageUtils queryPageByCondition(Map<String, Object> params) {
+        QueryWrapper<SpuInfoEntity> wrapper = new QueryWrapper<>();
+
+        String key = (String) params.get("key");
+        if(!StringUtils.isEmpty(key)){
+            wrapper.and((w)->{
+                w.eq("id",key).or().like("spu_name",key);
+            });
+        }
+        // status=1 and (id=1 or spu_name like xxx)
+        String status = (String) params.get("status");
+        if(!StringUtils.isEmpty(status)){
+            wrapper.eq("publish_status",status);
+        }
+
+        String brandId = (String) params.get("brandId");
+        if(!StringUtils.isEmpty(brandId)&&!"0".equalsIgnoreCase(brandId)){
+            wrapper.eq("brand_id",brandId);
+        }
+
+        String catelogId = (String) params.get("catelogId");
+        if(!StringUtils.isEmpty(catelogId)&&!"0".equalsIgnoreCase(catelogId)){
+            wrapper.eq("catalog_id",catelogId);
+        }
+
+        /**
+         * status: 2
+         * key:
+         * brandId: 9
+         * catelogId: 225
+         */
+
+        IPage<SpuInfoEntity> page = this.page(
+                new Query<SpuInfoEntity>().getPage(params),
+                wrapper
+        );
+
+        return new PageUtils(page);
     }
 
     public void saveBaseSpuInfo(SpuInfoEntity infoEntity) {

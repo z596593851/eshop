@@ -78,4 +78,8 @@ public class R extends HashMap<String, Object> {
 		R r=new R();
 		System.out.println(r.wordBreak(s, list));
 	}
+
+	public  Integer getCode() {
+		return (Integer) this.get("code");
+	}
 }

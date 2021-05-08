@@ -16,6 +16,8 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 100MB
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
@@ -39,4 +41,7 @@ fdfs:
 logging:
   level:
     com.hxm.eshop: debug
+    com.alibaba.nacos.client.config.impl: WARN
+    com.alibaba.nacos.client.naming: WARN
+
 
