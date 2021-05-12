@@ -2,23 +2,13 @@ package com.hxm.eshop.product.controller;
 
 import java.util.Arrays;
 import java.util.Map;
-
-//mport org.apache.shiro.authz.annotation.RequiresPermissions;
 import com.hxm.eshop.product.vo.SpuSaveVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import com.hxm.eshop.product.entity.SpuInfoEntity;
 import com.hxm.eshop.product.service.SpuInfoService;
 import com.hxm.common.utils.PageUtils;
 import com.hxm.common.utils.R;
-
-
-
 /**
  * spu信息
  *
@@ -30,6 +20,18 @@ import com.hxm.common.utils.R;
 public class SpuInfoController {
     @Autowired
     private SpuInfoService spuInfoService;
+
+    /**
+     * 商品上架功能
+     *
+     * @param spuId
+     * @return
+     */
+    @PostMapping("/{spuId}/up")
+    public R upSpu(@PathVariable Long spuId) {
+        spuInfoService.up(spuId);
+        return R.ok();
+    }
 
     /**
      * 列表

@@ -25,6 +25,7 @@
 <!--        <module>eshop-common</module>-->
         <module>eshop-gateway</module>
         <module>eshop-common</module>
+        <module>eshop-search</module>
     </modules>
 
 </project>
