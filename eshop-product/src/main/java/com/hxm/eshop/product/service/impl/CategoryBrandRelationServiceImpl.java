@@ -81,4 +81,9 @@ public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandR
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public void updateCategory(Long catId, String name) {
+        updateCategory(catId,name);
+    }
+
 }

@@ -7,6 +7,8 @@ spring:
         server-addr: 127.0.0.1:8848
   application:
     name: eshop-search
+  thymeleaf:
+    cache: false
 
 # 打印sql
 logging:
@@ -14,5 +16,6 @@ logging:
     com.hxm.eshop: debug
     com.alibaba.nacos.client.config.impl: WARN
     com.alibaba.nacos.client.naming: WARN
+
 
 

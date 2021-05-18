@@ -20,6 +20,16 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
   thymeleaf:
     cache: false
+  cache:
+    type: redis
+    redis:
+      time-to-live: 3600000 #缓存到期时间-毫秒
+      use-key-prefix: true #是否使用前缀
+      # key-prefix: CACHE_ #指定缓存前缀
+      cache-null-values: true #缓存空值，防止缓存穿透
+  redis:
+    host: 127.0.0.1
+    port: 6379
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
@@ -45,5 +55,4 @@ logging:
     com.hxm.eshop: debug
     com.alibaba.nacos.client.config.impl: WARN
     com.alibaba.nacos.client.naming: WARN
-
 

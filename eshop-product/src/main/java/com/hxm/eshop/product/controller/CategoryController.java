@@ -10,6 +10,8 @@ import com.hxm.eshop.product.entity.CategoryEntity;
 import com.hxm.eshop.product.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
+import org.redisson.api.RedissonClient;
+import org.redisson.spring.starter.RedissonAutoConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.BindingResult;
@@ -42,6 +44,9 @@ public class CategoryController {
     private ThumbImageConfig thumbImageConfig;
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    RedissonClient redissonClient;
 
     /**
      * 列表
