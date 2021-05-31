@@ -1,0 +1,214 @@
+PUT eshop_product
+{
+  "mappings": {
+    "properties": {
+      "skuId": { "type": "long" },
+      "spuId": { "type": "keyword" },
+      "skuTitle": {
+        "type": "text",
+        "analyzer": "ik_smart"
+      },
+      "skuPrice": { "type": "keyword" },
+      "skuImg": {
+        "type": "keyword",
+        "index": false,
+        "doc_values": false
+      },
+      "saleCount":{ "type":"long" },
+      "hasStock": { "type": "boolean" },
+      "hotScore": { "type": "long"  },
+      "brandId":  { "type": "long" },
+      "catalogId": { "type": "long"  },
+      "brandName": {
+        "type": "keyword",
+        "index": false
+      },
+      "brandImg":{
+        "type": "keyword",
+        "index": false
+      },
+      "catalogName": {
+        "type": "keyword",
+        "index": false
+      },
+      "attrs": {
+        "type": "nested",
+        "properties": {
+          "attrId": {"type": "long"  },
+          "attrName": {
+            "type": "keyword",
+            "index": false
+          },
+          "attrValue": { "type": "keyword" }
+        }
+      }
+    }
+  }
+}
+
+
+
+
+
+GET eshop_product/_search
+{
+  "from": 0,
+  "size": 2,
+  "query": {
+    "bool": {
+      "adjust_pure_negative": true,
+      "boost": 1
+    }
+  },
+  "aggregations": {
+    "brand_agg": {
+      "terms": {
+        "field": "brandId",
+        "size": 50,
+        "min_doc_count": 1,
+        "shard_min_doc_count": 0,
+        "show_term_doc_count_error": false,
+        "order": [
+          {
+            "_count": "desc"
+          },
+          {
+            "_key": "asc"
+          }
+        ]
+      },
+      "aggregations": {
+        "brand_name_agg": {
+          "terms": {
+            "field": "brandName",
+            "size": 1,
+            "min_doc_count": 1,
+            "shard_min_doc_count": 0,
+            "show_term_doc_count_error": false,
+            "order": [
+              {
+                "_count": "desc"
+              },
+              {
+                "_key": "asc"
+              }
+            ]
+          }
+        },
+        "brand_img_agg": {
+          "terms": {
+            "field": "brandImg",
+            "size": 1,
+            "min_doc_count": 1,
+            "shard_min_doc_count": 0,
+            "show_term_doc_count_error": false,
+            "order": [
+              {
+                "_count": "desc"
+              },
+              {
+                "_key": "asc"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "catalog_agg": {
+      "terms": {
+        "field": "catalogId",
+        "size": 20,
+        "min_doc_count": 1,
+        "shard_min_doc_count": 0,
+        "show_term_doc_count_error": false,
+        "order": [
+          {
+            "_count": "desc"
+          },
+          {
+            "_key": "asc"
+          }
+        ]
+      },
+      "aggregations": {
+        "catalog_name_agg": {
+          "terms": {
+            "field": "catalogName",
+            "size": 1,
+            "min_doc_count": 1,
+            "shard_min_doc_count": 0,
+            "show_term_doc_count_error": false,
+            "order": [
+              {
+                "_count": "desc"
+              },
+              {
+                "_key": "asc"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "attr_agg": {
+      "nested": {
+        "path": "attrs"
+      },
+      "aggregations": {
+        "attr_id_agg": {
+          "terms": {
+            "field": "attrs.attrId",
+            "size": 10,
+            "min_doc_count": 1,
+            "shard_min_doc_count": 0,
+            "show_term_doc_count_error": false,
+            "order": [
+              {
+                "_count": "desc"
+              },
+              {
+                "_key": "asc"
+              }
+            ]
+          },
+          "aggregations": {
+            "attr_name_agg": {
+              "terms": {
+                "field": "attrs.attrName",
+                "size": 1,
+                "min_doc_count": 1,
+                "shard_min_doc_count": 0,
+                "show_term_doc_count_error": false,
+                "order": [
+                  {
+                    "_count": "desc"
+                  },
+                  {
+                    "_key": "asc"
+                  }
+                ]
+              }
+            },
+            "attr_value_agg": {
+              "terms": {
+                "field": "attrs.attrValue",
+                "size": 50,
+                "min_doc_count": 1,
+                "shard_min_doc_count": 0,
+                "show_term_doc_count_error": false,
+                "order": [
+                  {
+                    "_count": "desc"
+                  },
+                  {
+                    "_key": "asc"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
