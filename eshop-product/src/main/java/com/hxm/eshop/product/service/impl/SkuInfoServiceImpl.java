@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.function.Supplier;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -120,13 +121,13 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
 
         SkuItemVo skuItemVo = new SkuItemVo();
 
+        //supplyAsync有返回值
         CompletableFuture<SkuInfoEntity> infoFuture = CompletableFuture.supplyAsync(() -> {
             //1、sku基本信息的获取  pms_sku_info
             SkuInfoEntity info = this.getById(skuId);
             skuItemVo.setInfo(info);
             return info;
         }, executor);
-
 
         CompletableFuture<Void> saleAttrFuture = infoFuture.thenAcceptAsync((res) -> {
             //3、获取spu的销售属性组合

@@ -2,6 +2,7 @@ package com.hxm.eshop.member.dao;
 
 import com.hxm.eshop.member.entity.MemberEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.hxm.eshop.member.entity.MemberLevelEntity;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

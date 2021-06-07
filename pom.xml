@@ -26,6 +26,7 @@
         <module>eshop-gateway</module>
         <module>eshop-common</module>
         <module>eshop-search</module>
+        <module>eshop-auth</module>
     </modules>
 
 </project>

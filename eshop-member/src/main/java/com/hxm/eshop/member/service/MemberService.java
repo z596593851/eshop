@@ -3,6 +3,8 @@ package com.hxm.eshop.member.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hxm.common.utils.PageUtils;
 import com.hxm.eshop.member.entity.MemberEntity;
+import com.hxm.eshop.member.vo.MemberUserLoginVo;
+import com.hxm.eshop.member.vo.MemberUserRegisterVo;
 
 import java.util.Map;
 
@@ -16,5 +18,18 @@ import java.util.Map;
 public interface MemberService extends IService<MemberEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    /**
+     * 用户注册
+     * @param vo
+     */
+    void register(MemberUserRegisterVo vo);
+
+    /**
+     * 用户登录
+     * @param vo
+     * @return
+     */
+    MemberEntity login(MemberUserLoginVo vo);
 }
 
