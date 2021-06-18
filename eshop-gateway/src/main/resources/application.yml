@@ -39,6 +39,11 @@ spring:
           uri: lb://eshop-search
           predicates:
             - Host=search.eshop.com
+
+        - id: mall_auth_route
+          uri: lb://eshop-auth
+          predicates:
+            - Host=auth.eshop.com
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848

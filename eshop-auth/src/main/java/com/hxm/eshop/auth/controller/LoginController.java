@@ -43,14 +43,14 @@ public class LoginController {
         R register = memberFeignService.register(vos);
         if (register.getCode() == 0) {
             //成功
-            return "redirect:http://auth.gulimall.com/login.html";
+            return "redirect:http://auth.eshop.com/login.html";
         } else {
             //失败
             Map<String, String> errors = new HashMap<>();
             errors.put("msg", register.getData("msg", new TypeReference<String>() {
             }));
             attributes.addFlashAttribute("errors", errors);
-            return "redirect:http://auth.gulimall.com/reg.html";
+            return "redirect:http://auth.eshop.com/reg.html";
         }
     }
 
@@ -63,7 +63,7 @@ public class LoginController {
          if (attribute == null) {
              return "login";
          } else {
-             return "redirect:http://gulimall.com";
+             return "redirect:http://eshop.com";
          }
 
     }
@@ -78,13 +78,13 @@ public class LoginController {
             MemberResponseVo data = login.getData("data", new TypeReference<MemberResponseVo>() {
             });
             session.setAttribute(LOGIN_USER, data);
-            return "redirect:http://gulimall.com";
+            return "redirect:http://eshop.com";
         } else {
             Map<String, String> errors = new HashMap<>();
             errors.put("msg", login.getData("msg", new TypeReference<String>() {
             }));
             attributes.addFlashAttribute("errors", errors);
-            return "redirect:http://auth.gulimall.com/login.html";
+            return "redirect:http://auth.eshop.com/login.html";
         }
     }
 }
