@@ -4,18 +4,40 @@ spring:
     password: root
     url: jdbc:mysql://localhost:3306/gulimall_oms?useSSL=false&serverTimezone=GMT%2B8&characterEncoding=utf-8
     driver-class-name: com.mysql.jdbc.Driver
-  cloud:
-    nacos:
-      discovery:
-        server-addr: 127.0.0.1:8848
+  redis:
+    port: 6379
+    host: 127.0.0.1
+  session:
+    store-type: redis
   application:
     name: eshop-order
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    virtual-host: /
+    #开启发送端确认
+    publisher-confirms: true
+    #开启发送端消息抵达队列的确认
+    publisher-returns: true
+    #只要抵达队列，以异步发送优先回调我们这个returnconfirm
+    template:
+      mandatory: true
+    #消费端手动ack
+    listener:
+      simple:
+        acknowledge-mode: manual
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
   global-config:
     db-config:
       id-type: auto
+
+eshop:
+  thread:
+    coreSize: 20
+    maxSize: 200
+    keepAliveTime: 10
 
 server:
   port: 7000
