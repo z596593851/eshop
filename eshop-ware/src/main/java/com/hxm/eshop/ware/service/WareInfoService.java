@@ -3,6 +3,7 @@ package com.hxm.eshop.ware.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hxm.common.utils.PageUtils;
 import com.hxm.eshop.ware.entity.WareInfoEntity;
+import com.hxm.eshop.ware.vo.FareVo;
 
 import java.util.Map;
 
@@ -16,5 +17,7 @@ import java.util.Map;
 public interface WareInfoService extends IService<WareInfoEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    FareVo getFare(Long addrId);
 }
 

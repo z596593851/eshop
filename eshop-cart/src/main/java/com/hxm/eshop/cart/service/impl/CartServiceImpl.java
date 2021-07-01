@@ -2,6 +2,7 @@ package com.hxm.eshop.cart.service.impl;
 
 import com.alibaba.fastjson.JSON;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.hxm.common.utils.R;
 import com.hxm.eshop.cart.exception.CartExceptionHandler;
@@ -260,6 +261,7 @@ public class CartServiceImpl implements CartService {
         //获取当前用户登录的信息
         UserInfoTo userInfoTo = CartInterceptor.toThreadLocal.get();
         //如果用户未登录直接返回null
+        System.out.println("getUserCartItems:"+ JSONObject.toJSONString(userInfoTo));
         if (userInfoTo.getUserId() == null) {
             return null;
         } else {

@@ -1,6 +1,7 @@
 package com.hxm.eshop.cart.interceptor;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.hxm.common.vo.MemberResponseVo;
 import com.hxm.eshop.cart.to.UserInfoTo;
 import org.apache.commons.lang.StringUtils;
@@ -40,12 +41,14 @@ public class CartInterceptor implements HandlerInterceptor {
      */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        System.out.println("进来");
 
         UserInfoTo userInfoTo = new UserInfoTo();
 
         HttpSession session = request.getSession();
         //获得当前登录用户的信息
         MemberResponseVo memberResponseVo = (MemberResponseVo) session.getAttribute(LOGIN_USER);
+        System.out.println(JSONObject.toJSONString(memberResponseVo));
 
         if (memberResponseVo != null) {
             //用户登录了
@@ -72,6 +75,7 @@ public class CartInterceptor implements HandlerInterceptor {
         }
 
         //目标方法执行之前
+        System.out.println(JSONObject.toJSONString(userInfoTo));
         toThreadLocal.set(userInfoTo);
         return true;
     }

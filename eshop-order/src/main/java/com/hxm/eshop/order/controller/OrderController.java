@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 //mport org.apache.shiro.authz.annotation.RequiresPermissions;
-import com.hxm.eshop.order.feign.OrderFeignService;
+import com.hxm.eshop.order.feign.ProductFeignService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,11 +33,11 @@ public class OrderController {
     private OrderService orderService;
 
     @Autowired
-    OrderFeignService orderFeignService;
+    ProductFeignService productFeignService;
 
     @RequestMapping("/brandList")
     public R brandList(){
-        R result=orderFeignService.brandList();
+        R result=productFeignService.brandList();
         return R.ok().put("page",result.get("page"));
     }
 
