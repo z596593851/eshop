@@ -16,6 +16,16 @@ spring:
       max-request-size: 100MB
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
+
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    virtual-host: /
+    #消费端手动ack
+    listener:
+      simple:
+        acknowledge-mode: manual
+
   application:
     name: eshop-ware
 

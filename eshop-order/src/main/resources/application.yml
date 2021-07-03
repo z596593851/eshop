@@ -16,12 +16,12 @@ spring:
     port: 5672
     virtual-host: /
     #开启发送端确认
-    publisher-confirms: true
+    #publisher-confirms: true
     #开启发送端消息抵达队列的确认
-    publisher-returns: true
+    #publisher-returns: true
     #只要抵达队列，以异步发送优先回调我们这个returnconfirm
-    template:
-      mandatory: true
+    #template:
+      #mandatory: true
     #消费端手动ack
     listener:
       simple:

@@ -6,11 +6,7 @@ import java.util.Map;
 //mport org.apache.shiro.authz.annotation.RequiresPermissions;
 import com.hxm.eshop.order.feign.ProductFeignService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.hxm.eshop.order.entity.OrderEntity;
 import com.hxm.eshop.order.service.OrderService;
@@ -35,6 +31,17 @@ public class OrderController {
     @Autowired
     ProductFeignService productFeignService;
 
+    /**
+     * 根据订单编号查询订单状态
+     * @param orderSn
+     * @return
+     */
+    @GetMapping(value = "/status/{orderSn}")
+    public R getOrderStatus(@PathVariable("orderSn") String orderSn) {
+        OrderEntity orderEntity = orderService.getOrderByOrderSn(orderSn);
+        return R.ok().setData(orderEntity);
+    }
+
     @RequestMapping("/brandList")
     public R brandList(){
         R result=productFeignService.brandList();
@@ -45,7 +52,6 @@ public class OrderController {
      * 列表
      */
     @RequestMapping("/list")
-    //@RequiresPermissions("order:order:list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = orderService.queryPage(params);
 
@@ -57,7 +63,6 @@ public class OrderController {
      * 信息
      */
     @RequestMapping("/info/{id}")
-    //@RequiresPermissions("order:order:info")
     public R info(@PathVariable("id") Long id){
 		OrderEntity order = orderService.getById(id);
 

@@ -7,12 +7,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @EnableFeignClients("com.hxm.eshop.order.feign")
 @MapperScan("com.hxm.eshop.order.dao")
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableRedisHttpSession
+@EnableTransactionManagement
 @EnableRabbit
 public class EshopOrderApplication {
 

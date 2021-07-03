@@ -21,6 +21,7 @@ public class LoginUserInterceptor implements HandlerInterceptor {
 
         String uri = request.getRequestURI();
         AntPathMatcher antPathMatcher = new AntPathMatcher();
+        //mq调用绕过拦截器，防止被未登录检查拦截
         boolean match = antPathMatcher.match("/order/order/status/**", uri);
         boolean match1 = antPathMatcher.match("/payed/notify", uri);
         if (match || match1) {

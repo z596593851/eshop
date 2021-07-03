@@ -15,7 +15,7 @@ import org.springframework.session.web.http.DefaultCookieSerializer;
  **/
 
 @Configuration
-public class GulimallSessionConfig {
+public class EshopSessionConfig {
 
     @Bean
     public CookieSerializer cookieSerializer() {
