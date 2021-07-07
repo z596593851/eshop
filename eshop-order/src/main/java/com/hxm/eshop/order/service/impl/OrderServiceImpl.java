@@ -1,5 +1,6 @@
 package com.hxm.eshop.order.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.hxm.common.exception.NoStockException;
@@ -7,6 +8,7 @@ import com.hxm.common.to.mq.OrderTo;
 import com.hxm.common.utils.R;
 import com.hxm.common.vo.MemberResponseVo;
 import com.hxm.eshop.order.entity.OrderItemEntity;
+import com.hxm.eshop.order.entity.PaymentInfoEntity;
 import com.hxm.eshop.order.enums.OrderStatusEnum;
 import com.hxm.eshop.order.feign.CartFeignService;
 import com.hxm.eshop.order.feign.MemberFeignService;
@@ -14,6 +16,7 @@ import com.hxm.eshop.order.feign.ProductFeignService;
 import com.hxm.eshop.order.feign.WmsFeignService;
 import com.hxm.eshop.order.interceptor.LoginUserInterceptor;
 import com.hxm.eshop.order.service.OrderItemService;
+import com.hxm.eshop.order.service.PaymentInfoService;
 import com.hxm.eshop.order.to.OrderCreateTo;
 import com.hxm.eshop.order.vo.*;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -70,6 +73,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     ProductFeignService productFeignService;
     @Autowired
     RabbitTemplate rabbitTemplate;
+    @Autowired
+    PaymentInfoService paymentInfoService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -464,5 +469,75 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         }
     }
 
+    /**
+     * 获取当前订单的支付信息
+     * @param orderSn
+     * @return
+     */
+    @Override
+    public PayVo getOrderPay(String orderSn) {
 
+        PayVo payVo = new PayVo();
+        OrderEntity orderInfo = this.getOrderByOrderSn(orderSn);
+
+        //保留两位小数点，向上取值
+        BigDecimal payAmount = orderInfo.getPayAmount().setScale(2, BigDecimal.ROUND_UP);
+        payVo.setTotalAmount(payAmount.toString());
+        payVo.setOutTradeNo(orderInfo.getOrderSn());
+
+        //查询订单项的数据
+        List<OrderItemEntity> orderItemInfo = orderItemService.list(
+                new QueryWrapper<OrderItemEntity>().eq("order_sn", orderSn));
+        OrderItemEntity orderItemEntity = orderItemInfo.get(0);
+        payVo.setBody(orderItemEntity.getSkuAttrsVals());
+
+        payVo.setSubject(orderItemEntity.getSkuName());
+
+        return payVo;
+    }
+
+    @Override
+    public String handlePayResult(PayAsyncVo asyncVo) {
+        //保存交易流水
+        PaymentInfoEntity paymentInfo = new PaymentInfoEntity();
+        paymentInfo.setOrderSn(asyncVo.getOut_trade_no());
+        paymentInfo.setAlipayTradeNo(asyncVo.getTrade_no());
+        paymentInfo.setTotalAmount(new BigDecimal(asyncVo.getBuyer_pay_amount()));
+        paymentInfo.setSubject(asyncVo.getBody());
+        paymentInfo.setPaymentStatus(asyncVo.getTrade_status());
+        paymentInfo.setCreateTime(new Date());
+        paymentInfo.setCallbackTime(asyncVo.getNotify_time());
+        System.out.println("交易流水实体:"+ JSONObject.toJSONString(paymentInfo));
+        paymentInfoService.save(paymentInfo);
+        //修改订单状态
+        if("TRADE_SUCCESS".equals(asyncVo.getTrade_status()) || "TRADE_FINISHED".equals(asyncVo.getTrade_status())){
+            String outTradeNo=asyncVo.getOut_trade_no();
+            this.baseMapper.updateOrderStatus(outTradeNo,OrderStatusEnum.PAYED.getCode());
+        }
+        return "success";
+    }
+
+    @Override
+    public PageUtils queryPageWithItem(Map<String, Object> params) {
+        MemberResponseVo memberResponseVo = LoginUserInterceptor.loginUser.get();
+
+        IPage<OrderEntity> page = this.page(
+                new Query<OrderEntity>().getPage(params),
+                new QueryWrapper<OrderEntity>()
+                        .eq("member_id",memberResponseVo.getId()).orderByDesc("create_time")
+        );
+
+        //遍历所有订单集合
+        List<OrderEntity> orderEntityList = page.getRecords().stream().map(order -> {
+            //根据订单号查询订单项里的数据
+            List<OrderItemEntity> orderItemEntities = orderItemService.list(new QueryWrapper<OrderItemEntity>()
+                    .eq("order_sn", order.getOrderSn()));
+            order.setOrderItemEntityList(orderItemEntities);
+            return order;
+        }).collect(Collectors.toList());
+
+        page.setRecords(orderEntityList);
+
+        return new PageUtils(page);
+    }
 }

@@ -54,6 +54,11 @@ spring:
           uri: lb://eshop-order
           predicates:
             - Host=order.eshop.com
+
+        - id: mall_member_route
+          uri: lb://eshop-member
+          predicates:
+            - Host=member.eshop.com
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848

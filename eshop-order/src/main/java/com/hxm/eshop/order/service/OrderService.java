@@ -3,9 +3,7 @@ package com.hxm.eshop.order.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hxm.common.utils.PageUtils;
 import com.hxm.eshop.order.entity.OrderEntity;
-import com.hxm.eshop.order.vo.OrderConfirmVo;
-import com.hxm.eshop.order.vo.OrderSubmitVo;
-import com.hxm.eshop.order.vo.SubmitOrderResponseVo;
+import com.hxm.eshop.order.vo.*;
 
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -28,5 +26,11 @@ public interface OrderService extends IService<OrderEntity> {
     void closeOrder(OrderEntity orderEntity);
 
     OrderEntity getOrderByOrderSn(String orderSn);
+
+    PayVo getOrderPay(String orderSn);
+
+    String handlePayResult(PayAsyncVo vo);
+
+    PageUtils queryPageWithItem(Map<String, Object> params);
 }
 
